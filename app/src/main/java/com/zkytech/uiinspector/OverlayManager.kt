@@ -19,7 +19,6 @@ class OverlayManager(private val context: Context) {
     private var floatingControlView: View? = null
     private var inspectorOverlayView: View? = null
     private var inspectorView: InspectorOverlayView? = null
-    private var nodeInfoTextView: TextView? = null
 
     var onInspectClicked: (() -> Unit)? = null
     var onCloseInspectorClicked: (() -> Unit)? = null
@@ -69,8 +68,12 @@ class OverlayManager(private val context: Context) {
         // We can find the children of the FrameLayout.
         
         // Better way: Let's assume we can find the views by ID since they are inflated into inspectorOverlayView.
-        nodeInfoTextView = inspectorOverlayView?.findViewById(R.id.tv_node_info)
-        val infoContainer = nodeInfoTextView?.parent as? View
+        val propertiesContainer = inspectorOverlayView?.findViewById<View>(R.id.ll_node_properties)
+        // The parent of the properties container (ScrollView) is inside the LinearLayout from layout_node_info.
+        // We want to drag the whole info panel, which is the root of layout_node_info.
+        // In layout_inspector_overlay, it is included.
+        // Let's find the ScrollView's parent, which is the LinearLayout.
+        val infoContainer = propertiesContainer?.parent?.parent as? View
 
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -132,7 +135,6 @@ class OverlayManager(private val context: Context) {
             windowManager.removeView(inspectorOverlayView)
             inspectorOverlayView = null
             inspectorView = null
-            nodeInfoTextView = null
         }
         floatingControlView?.visibility = View.VISIBLE
     }
@@ -140,15 +142,44 @@ class OverlayManager(private val context: Context) {
     fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect) {
         inspectorView?.updateHighlight(bounds)
         
-        val sb = StringBuilder()
-        sb.append("Class: ${node.className}\n")
-        sb.append("ID: ${node.viewIdResourceName ?: "N/A"}\n")
-        sb.append("Text: ${node.text ?: "N/A"}\n")
-        sb.append("Bounds: $bounds\n")
-        sb.append("Clickable: ${node.isClickable}\n")
-        sb.append("ContentDesc: ${node.contentDescription ?: "N/A"}")
-        
-        nodeInfoTextView?.text = sb.toString()
+        val propertiesContainer = inspectorOverlayView?.findViewById<android.widget.LinearLayout>(R.id.ll_node_properties)
+        propertiesContainer?.removeAllViews()
+
+        val properties = mapOf(
+            "Package" to (node.packageName?.toString() ?: "N/A"),
+            "Class" to (node.className?.toString() ?: "N/A"),
+            "Resource ID" to (node.viewIdResourceName ?: "N/A"),
+            "Text" to (node.text?.toString() ?: "N/A"),
+            "Content Desc" to (node.contentDescription?.toString() ?: "N/A"),
+            "Bounds" to bounds.toShortString(),
+            "Clickable" to node.isClickable.toString(),
+            "Focusable" to node.isFocusable.toString(),
+            "Enabled" to node.isEnabled.toString(),
+            "Scrollable" to node.isScrollable.toString(),
+            "Checked" to node.isChecked.toString(),
+            "Editable" to node.isEditable.toString(),
+            "Visible to User" to node.isVisibleToUser.toString()
+        )
+
+        for ((key, value) in properties) {
+            val textView = TextView(context).apply {
+                text = "$key: $value"
+                setTextColor(android.graphics.Color.WHITE)
+                textSize = 14f
+                setPadding(0, 4, 0, 4)
+                setTextIsSelectable(false) // We handle long click manually
+            }
+
+            textView.setOnLongClickListener {
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clip = android.content.ClipData.newPlainText(key, value)
+                clipboard.setPrimaryClip(clip)
+                android.widget.Toast.makeText(context, "$key copied to clipboard", android.widget.Toast.LENGTH_SHORT).show()
+                true
+            }
+
+            propertiesContainer?.addView(textView)
+        }
     }
 
     fun removeAll() {
