@@ -54,11 +54,37 @@
         android:maxHeight="250dp"
         android:padding="12dp">
 
-        <TableLayout
-            android:id="@+id/tl_node_properties"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="1" />
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/tl_node_properties"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1" />
+
+            <TextView
+                android:id="@+id/tv_children_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Children (0) ▼"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/element_text_main"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <LinearLayout
+                android:id="@+id/ll_children_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
+        </LinearLayout>
     </ScrollView>
 
     <View

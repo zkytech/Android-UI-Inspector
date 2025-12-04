@@ -31,6 +31,7 @@ class OverlayManager(private val context: Context) {
     var onInspectClicked: (() -> Unit)? = null
     var onCloseInspectorClicked: (() -> Unit)? = null
     var onParentClicked: (() -> Unit)? = null
+    var onChildClicked: ((Int) -> Unit)? = null
     var onOverlayTouch: ((Int, Int) -> Unit)? = null
 
     private var floatingControlParams: WindowManager.LayoutParams? = null
@@ -178,6 +179,7 @@ class OverlayManager(private val context: Context) {
         }
 
         windowManager.addView(inspectorOverlayView, params)
+        infoContainer?.visibility = View.GONE
         floatingControlView?.visibility = View.GONE
     }
 
@@ -192,10 +194,18 @@ class OverlayManager(private val context: Context) {
         floatingControlView?.visibility = View.VISIBLE
     }
 
+    fun updateAllBounds(bounds: List<Rect>) {
+        inspectorView?.updateAllBounds(bounds)
+    }
+
     fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect) {
         inspectorView?.updateHighlight(bounds)
         
         val tableLayout = inspectorOverlayView?.findViewById<TableLayout>(R.id.tl_node_properties)
+        // Make the info container visible
+        val infoContainer = tableLayout?.parent?.parent as? View
+        infoContainer?.visibility = View.VISIBLE
+
         tableLayout?.removeAllViews()
 
         val properties = mapOf(
@@ -246,6 +256,47 @@ class OverlayManager(private val context: Context) {
             tableRow.addView(keyView)
             tableRow.addView(valueView)
             tableLayout?.addView(tableRow)
+        }
+
+        // Handle Children
+        val childrenContainer = inspectorOverlayView?.findViewById<android.widget.LinearLayout>(R.id.ll_children_container)
+        val childrenHeader = inspectorOverlayView?.findViewById<TextView>(R.id.tv_children_header)
+        
+        val childCount = node.childCount
+        childrenHeader?.text = "Children ($childCount) ▼"
+        childrenContainer?.removeAllViews()
+        childrenContainer?.visibility = View.GONE // Default collapsed
+
+        childrenHeader?.setOnClickListener {
+            if (childrenContainer?.visibility == View.VISIBLE) {
+                childrenContainer.visibility = View.GONE
+                childrenHeader.text = "Children ($childCount) ▼"
+            } else {
+                childrenContainer?.visibility = View.VISIBLE
+                childrenHeader?.text = "Children ($childCount) ▲"
+            }
+        }
+
+        for (i in 0 until childCount) {
+            val child = node.getChild(i) ?: continue
+            val childView = TextView(context).apply {
+                text = "${child.className?.toString()?.substringAfterLast('.')} " +
+                        (if (child.viewIdResourceName != null) ": ${child.viewIdResourceName?.substringAfterLast('/')}" else "")
+                setTextColor(context.getColor(R.color.element_text_regular))
+                textSize = 12f
+                setPadding(16, 8, 16, 8)
+                setBackgroundResource(R.drawable.bg_button_secondary) // Reuse or simple bg
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 4, 0, 4)
+                }
+                setOnClickListener {
+                    onChildClicked?.invoke(i)
+                }
+            }
+            childrenContainer?.addView(childView)
         }
     }
 

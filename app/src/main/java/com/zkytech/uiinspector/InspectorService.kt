@@ -16,6 +16,7 @@ class InspectorService : AccessibilityService() {
         
         overlayManager.onInspectClicked = {
             overlayManager.showInspectorOverlay()
+            refreshAllBounds()
         }
 
         overlayManager.onCloseInspectorClicked = {
@@ -26,6 +27,12 @@ class InspectorService : AccessibilityService() {
         overlayManager.onParentClicked = {
             currentInspectedNode?.parent?.let { parent ->
                 updateInspectedNode(parent)
+            }
+        }
+        
+        overlayManager.onChildClicked = { index ->
+            currentInspectedNode?.getChild(index)?.let { child ->
+                updateInspectedNode(child)
             }
         }
 
@@ -47,6 +54,30 @@ class InspectorService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         overlayManager.removeAll()
+    }
+
+    private fun refreshAllBounds() {
+        val root = rootInActiveWindow ?: return
+        val allBounds = mutableListOf<Rect>()
+        collectBoundsRecursive(root, allBounds)
+        overlayManager.updateAllBounds(allBounds)
+        root.recycle()
+    }
+
+    private fun collectBoundsRecursive(node: AccessibilityNodeInfo, list: MutableList<Rect>) {
+        val bounds = Rect()
+        node.getBoundsInScreen(bounds)
+        if (!bounds.isEmpty) {
+            list.add(bounds)
+        }
+
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i)
+            if (child != null) {
+                collectBoundsRecursive(child, list)
+                child.recycle()
+            }
+        }
     }
 
     private fun findNodeAtPoint(x: Int, y: Int) {
