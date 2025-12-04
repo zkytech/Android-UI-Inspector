@@ -26,8 +26,13 @@ jobs:
         run: |
           echo $KEYSTORE_BASE64 | base64 --decode > ${{ github.workspace }}/release.jks
 
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION_NAME=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
       - name: Build Release APK
         env:
+          VERSION_NAME: ${{ env.VERSION_NAME }}
           KEYSTORE_FILE: ${{ github.workspace }}/release.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
