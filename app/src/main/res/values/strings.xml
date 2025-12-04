@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Android UI Inspector</string>
+    <string name="accessibility_service_description">Allows inspecting UI elements of other apps.</string>
+    <string name="action_inspect">Inspect</string>
+    <string name="action_close">Close</string>
+    <string name="grant_overlay_permission">Grant Overlay Permission</string>
+    <string name="grant_accessibility_permission">Grant Accessibility Permission</string>
+    <string name="permission_required">Permissions Required</string>
+    <string name="permission_instruction">Please grant both Overlay and Accessibility permissions to use the inspector.</string>
+</resources>
