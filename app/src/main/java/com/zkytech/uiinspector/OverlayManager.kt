@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -12,13 +14,16 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 class OverlayManager(private val context: Context) {
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private val mainHandler = Handler(Looper.getMainLooper())
     private var floatingControlView: View? = null
     private var inspectorOverlayView: View? = null
     private var inspectorView: InspectorOverlayView? = null
+    private var copyFeedbackView: TextView? = null
 
     var onInspectClicked: (() -> Unit)? = null
     var onCloseInspectorClicked: (() -> Unit)? = null
@@ -54,6 +59,7 @@ class OverlayManager(private val context: Context) {
 
         inspectorOverlayView = LayoutInflater.from(context).inflate(R.layout.layout_inspector_overlay, null)
         inspectorView = inspectorOverlayView?.findViewById(R.id.inspector_view)
+        copyFeedbackView = inspectorOverlayView?.findViewById(R.id.tv_copy_feedback)
         
         // Find the included layout view (it's the LinearLayout inside the include)
         // Since <include> merges or replaces depending on tag, but here layout_node_info is root LinearLayout.
@@ -135,9 +141,11 @@ class OverlayManager(private val context: Context) {
 
     fun hideInspectorOverlay() {
         if (inspectorOverlayView != null) {
+            copyFeedbackView?.animate()?.cancel()
             windowManager.removeView(inspectorOverlayView)
             inspectorOverlayView = null
             inspectorView = null
+            copyFeedbackView = null
         }
         floatingControlView?.visibility = View.VISIBLE
     }
@@ -187,7 +195,7 @@ class OverlayManager(private val context: Context) {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                 val clip = android.content.ClipData.newPlainText(key, value)
                 clipboard.setPrimaryClip(clip)
-                android.widget.Toast.makeText(context, "$key copied to clipboard", android.widget.Toast.LENGTH_SHORT).show()
+                showCopyFeedback("$key copied to clipboard")
                 true
             }
 
@@ -206,5 +214,30 @@ class OverlayManager(private val context: Context) {
             floatingControlView = null
         }
         hideInspectorOverlay()
+    }
+
+    private fun showCopyFeedback(message: String) {
+        mainHandler.post {
+            val toastHost = copyFeedbackView
+            if (toastHost == null) {
+                Toast.makeText(context.applicationContext, message, Toast.LENGTH_SHORT).show()
+                return@post
+            }
+
+            toastHost.animate().cancel()
+            toastHost.text = message
+            toastHost.alpha = 1f
+            toastHost.visibility = View.VISIBLE
+
+            toastHost.animate()
+                .alpha(0f)
+                .setStartDelay(600L)
+                .setDuration(250L)
+                .withEndAction {
+                    toastHost.visibility = View.GONE
+                    toastHost.alpha = 1f
+                }
+                .start()
+        }
     }
 }
