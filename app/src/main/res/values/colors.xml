@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="element_primary">#409EFF</color>
+    <color name="element_success">#67C23A</color>
+    <color name="element_warning">#E6A23C</color>
+    <color name="element_danger">#F56C6C</color>
+    <color name="element_info">#909399</color>
+    
+    <color name="element_text_main">#303133</color>
+    <color name="element_text_regular">#606266</color>
+    <color name="element_text_secondary">#909399</color>
+    <color name="element_text_placeholder">#C0C4CC</color>
+    
+    <color name="element_border_base">#DCDFE6</color>
+    <color name="element_border_light">#E4E7ED</color>
+    <color name="element_border_lighter">#EBEEF5</color>
+    <color name="element_border_extra_light">#F2F6FC</color>
+    
+    <color name="element_bg_base">#F5F7FA</color>
+    <color name="element_bg_white">#FFFFFF</color>
+    
+    <!-- Mapped standard colors -->
+    <color name="purple_200">@color/element_primary</color>
+    <color name="purple_500">@color/element_primary</color>
+    <color name="purple_700">@color/element_primary</color>
+    <color name="teal_200">@color/element_success</color>
+    <color name="teal_700">@color/element_success</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

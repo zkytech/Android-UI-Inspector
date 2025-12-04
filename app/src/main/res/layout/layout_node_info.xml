@@ -1,24 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.zkytech.uiinspector.MaxWidthLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_floating_window"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="0dp"
+    android:elevation="8dp">
 
-    <ImageView
+    <!-- Header / Drag Handle -->
+    <LinearLayout
         android:id="@+id/iv_drag_handle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_drag_handle"
-        android:padding="8dp"
-        android:contentDescription="Drag Handle" />
+        android:orientation="horizontal"
+        android:background="@drawable/bg_floating_window"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+        
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ui_inspector_icon"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Element Inspector"
+            android:textColor="@color/element_text_main"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/btn_close_inspector"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:tint="@color/element_text_secondary"
+            android:contentDescription="Close"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/element_border_lighter"/>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="8dp">
+        android:layout_height="wrap_content"
+        android:maxHeight="250dp"
+        android:padding="12dp">
 
         <TableLayout
             android:id="@+id/tl_node_properties"
@@ -27,24 +61,34 @@
             android:stretchColumns="1" />
     </ScrollView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/element_border_lighter"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="end">
+        android:gravity="end"
+        android:padding="12dp">
 
         <Button
             android:id="@+id/btn_parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:text="Parent"
-            android:layout_marginEnd="8dp"/>
+            android:background="@drawable/bg_button_secondary"
+            android:textColor="@color/element_text_regular"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:paddingHorizontal="12dp"
+            android:stateListAnimator="@null"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"/>
 
-        <Button
-            android:id="@+id/btn_close_inspector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Close" />
     </LinearLayout>
 
 </com.zkytech.uiinspector.MaxWidthLinearLayout>

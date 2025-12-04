@@ -13,7 +13,7 @@ class InspectorOverlayView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val paint = Paint().apply {
-        color = Color.RED
+        color = Color.parseColor("#409EFF")
         style = Paint.Style.STROKE
         strokeWidth = 5f
     }

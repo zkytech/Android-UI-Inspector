@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -15,6 +16,8 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.TableRow
+import android.widget.TableLayout
 
 class OverlayManager(private val context: Context) {
 
@@ -30,12 +33,19 @@ class OverlayManager(private val context: Context) {
     var onParentClicked: (() -> Unit)? = null
     var onOverlayTouch: ((Int, Int) -> Unit)? = null
 
+    private var floatingControlParams: WindowManager.LayoutParams? = null
+
     fun showFloatingControl() {
+        if (!Settings.canDrawOverlays(context)) {
+            Toast.makeText(context, "Overlay permission not granted", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (floatingControlView != null) return
 
         floatingControlView = LayoutInflater.from(context).inflate(R.layout.layout_floating_control, null)
         
-        val params = WindowManager.LayoutParams(
+        floatingControlParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PHONE,
@@ -47,38 +57,72 @@ class OverlayManager(private val context: Context) {
             y = 200
         }
 
-        floatingControlView?.findViewById<Button>(R.id.btn_inspect)?.setOnClickListener {
+        val btnInspect = floatingControlView?.findViewById<View>(R.id.btn_inspect)
+        btnInspect?.setOnTouchListener(object : View.OnTouchListener {
+            private var initialX = 0
+            private var initialY = 0
+            private var initialTouchX = 0f
+            private var initialTouchY = 0f
+            private val touchSlop = 10
+
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                val params = floatingControlParams ?: return false
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        initialX = params.x
+                        initialY = params.y
+                        initialTouchX = event.rawX
+                        initialTouchY = event.rawY
+                        return true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        val dX = (event.rawX - initialTouchX).toInt()
+                        val dY = (event.rawY - initialTouchY).toInt()
+                        if (Math.abs(dX) < touchSlop && Math.abs(dY) < touchSlop) {
+                            v.performClick()
+                        }
+                        return true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        params.x = initialX + (event.rawX - initialTouchX).toInt()
+                        params.y = initialY + (event.rawY - initialTouchY).toInt()
+                        windowManager.updateViewLayout(floatingControlView, params)
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+        
+        btnInspect?.setOnClickListener {
             onInspectClicked?.invoke()
         }
 
-        windowManager.addView(floatingControlView, params)
+        windowManager.addView(floatingControlView, floatingControlParams)
     }
 
     fun showInspectorOverlay() {
+        if (!Settings.canDrawOverlays(context)) {
+            Toast.makeText(context, "Overlay permission not granted", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (inspectorOverlayView != null) return
 
         inspectorOverlayView = LayoutInflater.from(context).inflate(R.layout.layout_inspector_overlay, null)
         inspectorView = inspectorOverlayView?.findViewById(R.id.inspector_view)
         copyFeedbackView = inspectorOverlayView?.findViewById(R.id.tv_copy_feedback)
         
-        // Find the included layout view (it's the LinearLayout inside the include)
-        // Since <include> merges or replaces depending on tag, but here layout_node_info is root LinearLayout.
-        // In layout_inspector_overlay.xml, <include> is used. If <include> has ID, it might be the view itself if it's not merge.
-        // Let's assume the LinearLayout inside layout_node_info is what we want to drag.
-        // Actually, in layout_inspector_overlay.xml, the include doesn't have an ID that we referenced in code before?
-        // Wait, previous code didn't reference the container.
-        // Let's find the LinearLayout by traversing or ID if possible.
-        // In layout_node_info.xml, the root is LinearLayout.
-        // In layout_inspector_overlay.xml:
-        // <include layout="@layout/layout_node_info" ... />
-        // We can find the children of the FrameLayout.
-        
-        // Better way: Let's assume we can find the views by ID since they are inflated into inspectorOverlayView.
         val propertiesContainer = inspectorOverlayView?.findViewById<View>(R.id.tl_node_properties)
-        // The parent of the properties container (ScrollView) is inside the LinearLayout from layout_node_info.
-        // We want to drag the whole info panel, which is the root of layout_node_info.
-        // In layout_inspector_overlay, it is included.
-        // Let's find the ScrollView's parent, which is the LinearLayout.
+        // Parent: ScrollView -> Parent: LinearLayout (inside MaxWidthLinearLayout) -> Parent: MaxWidthLinearLayout (root of layout_node_info)
+        // With the new layout_node_info:
+        // Root is MaxWidthLinearLayout.
+        // It is included in layout_inspector_overlay inside a FrameLayout.
+        // So finding the root of the included layout might be tricky if it's not merged.
+        // But since we can traverse up from a known child (tl_node_properties), let's do that to find the draggable container.
+        // tl_node_properties is inside ScrollView.
+        // ScrollView is inside MaxWidthLinearLayout (root of node info).
+        // So propertiesContainer.parent is ScrollView, parent.parent is MaxWidthLinearLayout.
         val infoContainer = propertiesContainer?.parent?.parent as? View
 
         val params = WindowManager.LayoutParams(
@@ -89,11 +133,11 @@ class OverlayManager(private val context: Context) {
             PixelFormat.TRANSLUCENT
         )
 
-        inspectorOverlayView?.findViewById<Button>(R.id.btn_close_inspector)?.setOnClickListener {
+        inspectorOverlayView?.findViewById<View>(R.id.btn_close_inspector)?.setOnClickListener {
             onCloseInspectorClicked?.invoke()
         }
 
-        inspectorOverlayView?.findViewById<Button>(R.id.btn_parent)?.setOnClickListener {
+        inspectorOverlayView?.findViewById<View>(R.id.btn_parent)?.setOnClickListener {
             onParentClicked?.invoke()
         }
 
@@ -122,14 +166,12 @@ class OverlayManager(private val context: Context) {
                         targetView.translationY = dY + deltaY
                     }
                 }
-                return true // Consume touch so it doesn't pass through
+                return true
             }
         })
 
-        // Capture touches on the overlay to find nodes
         inspectorOverlayView?.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                // Only trigger inspect if we didn't touch the info window (handled above by consumption)
                 onOverlayTouch?.invoke(event.rawX.toInt(), event.rawY.toInt())
             }
             true
@@ -153,7 +195,7 @@ class OverlayManager(private val context: Context) {
     fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect) {
         inspectorView?.updateHighlight(bounds)
         
-        val tableLayout = inspectorOverlayView?.findViewById<android.widget.TableLayout>(R.id.tl_node_properties)
+        val tableLayout = inspectorOverlayView?.findViewById<TableLayout>(R.id.tl_node_properties)
         tableLayout?.removeAllViews()
 
         val properties = mapOf(
@@ -173,21 +215,20 @@ class OverlayManager(private val context: Context) {
         )
 
         for ((key, value) in properties) {
-            val tableRow = android.widget.TableRow(context)
+            val tableRow = TableRow(context)
+            tableRow.setPadding(0, 8, 0, 8)
             
             val keyView = TextView(context).apply {
                 text = key
-                setTextColor(android.graphics.Color.LTGRAY)
-                textSize = 14f
-                setPadding(0, 4, 16, 4)
-                setTypeface(null, android.graphics.Typeface.BOLD)
+                setTextColor(context.getColor(R.color.element_text_secondary))
+                textSize = 12f
+                setPadding(0, 0, 16, 0)
             }
 
             val valueView = TextView(context).apply {
                 text = value
-                setTextColor(android.graphics.Color.WHITE)
-                textSize = 14f
-                setPadding(0, 4, 0, 4)
+                setTextColor(context.getColor(R.color.element_text_main))
+                textSize = 12f
                 setTextIsSelectable(false)
             }
 
@@ -200,7 +241,7 @@ class OverlayManager(private val context: Context) {
             }
 
             valueView.setOnLongClickListener(longClickListener)
-            tableRow.setOnLongClickListener(longClickListener) // Also allow clicking the row
+            tableRow.setOnLongClickListener(longClickListener)
 
             tableRow.addView(keyView)
             tableRow.addView(valueView)
