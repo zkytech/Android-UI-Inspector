@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Android(UI Inspector"
+rootProject.name = "Android UI Inspector"
 include(":app")
