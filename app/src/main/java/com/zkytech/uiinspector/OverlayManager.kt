@@ -260,20 +260,23 @@ class OverlayManager(private val context: Context) {
 
         // Handle Children
         val childrenContainer = inspectorOverlayView?.findViewById<android.widget.LinearLayout>(R.id.ll_children_container)
-        val childrenHeader = inspectorOverlayView?.findViewById<TextView>(R.id.tv_children_header)
+        val childrenHeader = inspectorOverlayView?.findViewById<android.view.ViewGroup>(R.id.ll_children_header)
+        val childrenTitle = inspectorOverlayView?.findViewById<TextView>(R.id.tv_children_title)
+        val childrenArrow = inspectorOverlayView?.findViewById<android.widget.ImageView>(R.id.iv_children_arrow)
         
         val childCount = node.childCount
-        childrenHeader?.text = "Children ($childCount) ▼"
+        childrenTitle?.text = "Children ($childCount)"
         childrenContainer?.removeAllViews()
         childrenContainer?.visibility = View.GONE // Default collapsed
+        childrenArrow?.rotation = 0f
 
         childrenHeader?.setOnClickListener {
             if (childrenContainer?.visibility == View.VISIBLE) {
                 childrenContainer.visibility = View.GONE
-                childrenHeader.text = "Children ($childCount) ▼"
+                childrenArrow?.animate()?.rotation(0f)?.setDuration(200)?.start()
             } else {
                 childrenContainer?.visibility = View.VISIBLE
-                childrenHeader?.text = "Children ($childCount) ▲"
+                childrenArrow?.animate()?.rotation(180f)?.setDuration(200)?.start()
             }
         }
 

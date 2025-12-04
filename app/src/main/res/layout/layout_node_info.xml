@@ -65,17 +65,34 @@
                 android:layout_height="wrap_content"
                 android:stretchColumns="1" />
 
-            <TextView
-                android:id="@+id/tv_children_header"
+            <LinearLayout
+                android:id="@+id/ll_children_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Children (0) ▼"
-                android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:textColor="@color/element_text_main"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:id="@+id/tv_children_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Children (0)"
+                    android:textStyle="bold"
+                    android:textColor="@color/element_text_main"
+                    android:textSize="14sp"/>
+
+                <ImageView
+                    android:id="@+id/iv_children_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_down"
+                    android:contentDescription="Expand" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_children_container"
