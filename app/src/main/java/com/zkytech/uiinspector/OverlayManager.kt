@@ -68,7 +68,7 @@ class OverlayManager(private val context: Context) {
         // We can find the children of the FrameLayout.
         
         // Better way: Let's assume we can find the views by ID since they are inflated into inspectorOverlayView.
-        val propertiesContainer = inspectorOverlayView?.findViewById<View>(R.id.ll_node_properties)
+        val propertiesContainer = inspectorOverlayView?.findViewById<View>(R.id.tl_node_properties)
         // The parent of the properties container (ScrollView) is inside the LinearLayout from layout_node_info.
         // We want to drag the whole info panel, which is the root of layout_node_info.
         // In layout_inspector_overlay, it is included.
@@ -91,26 +91,29 @@ class OverlayManager(private val context: Context) {
             onParentClicked?.invoke()
         }
 
-        // Drag logic for infoContainer
-        infoContainer?.setOnTouchListener(object : View.OnTouchListener {
+        val dragHandle = inspectorOverlayView?.findViewById<View>(R.id.iv_drag_handle)
+        
+        // Drag logic for infoContainer via dragHandle
+        dragHandle?.setOnTouchListener(object : View.OnTouchListener {
             var lastX = 0f
             var lastY = 0f
             var dX = 0f
             var dY = 0f
 
             override fun onTouch(view: View, event: MotionEvent): Boolean {
+                val targetView = infoContainer ?: return false
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         lastX = event.rawX
                         lastY = event.rawY
-                        dX = view.translationX
-                        dY = view.translationY
+                        dX = targetView.translationX
+                        dY = targetView.translationY
                     }
                     MotionEvent.ACTION_MOVE -> {
                         val deltaX = event.rawX - lastX
                         val deltaY = event.rawY - lastY
-                        view.translationX = dX + deltaX
-                        view.translationY = dY + deltaY
+                        targetView.translationX = dX + deltaX
+                        targetView.translationY = dY + deltaY
                     }
                 }
                 return true // Consume touch so it doesn't pass through
@@ -142,8 +145,8 @@ class OverlayManager(private val context: Context) {
     fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect) {
         inspectorView?.updateHighlight(bounds)
         
-        val propertiesContainer = inspectorOverlayView?.findViewById<android.widget.LinearLayout>(R.id.ll_node_properties)
-        propertiesContainer?.removeAllViews()
+        val tableLayout = inspectorOverlayView?.findViewById<android.widget.TableLayout>(R.id.tl_node_properties)
+        tableLayout?.removeAllViews()
 
         val properties = mapOf(
             "Package" to (node.packageName?.toString() ?: "N/A"),
@@ -162,15 +165,25 @@ class OverlayManager(private val context: Context) {
         )
 
         for ((key, value) in properties) {
-            val textView = TextView(context).apply {
-                text = "$key: $value"
+            val tableRow = android.widget.TableRow(context)
+            
+            val keyView = TextView(context).apply {
+                text = key
+                setTextColor(android.graphics.Color.LTGRAY)
+                textSize = 14f
+                setPadding(0, 4, 16, 4)
+                setTypeface(null, android.graphics.Typeface.BOLD)
+            }
+
+            val valueView = TextView(context).apply {
+                text = value
                 setTextColor(android.graphics.Color.WHITE)
                 textSize = 14f
                 setPadding(0, 4, 0, 4)
-                setTextIsSelectable(false) // We handle long click manually
+                setTextIsSelectable(false)
             }
 
-            textView.setOnLongClickListener {
+            val longClickListener = View.OnLongClickListener {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                 val clip = android.content.ClipData.newPlainText(key, value)
                 clipboard.setPrimaryClip(clip)
@@ -178,7 +191,12 @@ class OverlayManager(private val context: Context) {
                 true
             }
 
-            propertiesContainer?.addView(textView)
+            valueView.setOnLongClickListener(longClickListener)
+            tableRow.setOnLongClickListener(longClickListener) // Also allow clicking the row
+
+            tableRow.addView(keyView)
+            tableRow.addView(valueView)
+            tableLayout?.addView(tableRow)
         }
     }
 
