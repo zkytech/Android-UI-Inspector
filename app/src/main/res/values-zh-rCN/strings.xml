@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Android UI 检查器</string>
+    <string name="accessibility_service_description">允许检查其他应用的界面元素。</string>
+
+    <!-- Actions -->
+    <string name="action_inspect">检查</string>
+    <string name="action_inspect_description">检查界面元素</string>
+    <string name="action_close">关闭</string>
+    <string name="action_close_description">关闭检查器</string>
+    <string name="action_expand_description">展开</string>
+    <string name="action_parent">父元素</string>
+    <string name="action_enable_accessibility_service">启用辅助功能服务</string>
+    <string name="action_grant_overlay_permission">授予悬浮窗权限</string>
+
+    <!-- Titles -->
+    <string name="title_inspector">元素检查器</string>
+    <string name="title_permissions_required">需要权限</string>
+    <string name="title_children_count">子元素 (%d)</string>
+
+    <!-- Messages -->
+    <string name="message_inspect_ui_elements">检查屏幕上的界面元素</string>
+    <string name="message_permission_instruction">请授予悬浮窗和辅助功能权限以使用检查器。</string>
+    <string name="message_copied_to_clipboard">已复制到剪贴板</string>
+    <string name="message_overlay_permission_not_granted">未授予悬浮窗权限</string>
+    <string name="message_property_copied">%s 已复制到剪贴板</string>
+
+    <!-- Property Labels -->
+    <string name="label_property_package">包名</string>
+    <string name="label_property_class">类名</string>
+    <string name="label_property_resource_id">资源 ID</string>
+    <string name="label_property_text">文本</string>
+    <string name="label_property_content_desc">内容描述</string>
+    <string name="label_property_bounds">边界</string>
+    <string name="label_property_clickable">可点击</string>
+    <string name="label_property_focusable">可聚焦</string>
+    <string name="label_property_enabled">已启用</string>
+    <string name="label_property_scrollable">可滚动</string>
+    <string name="label_property_checked">已选中</string>
+    <string name="label_property_editable">可编辑</string>
+    <string name="label_property_visible_to_user">用户可见</string>
+
+    <!-- Legacy keys (kept for backward compatibility, will be removed) -->
+    <string name="grant_overlay_permission">授予悬浮窗权限</string>
+    <string name="grant_accessibility_permission">授予辅助功能权限</string>
+    <string name="permission_required">需要权限</string>
+    <string name="permission_instruction">请授予悬浮窗和辅助功能权限以使用检查器。</string>
+</resources>

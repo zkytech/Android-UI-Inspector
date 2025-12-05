@@ -14,6 +14,19 @@
 - Kotlin/Android defaults; format with Android Studio/ktlint-style settings.
 - Keep overlays and services clearly named (`*Service`, `*Manager`, `*OverlayView`) and prefer descriptive resource IDs.
 
+### Internationalization (i18n)
+- All user-facing strings MUST be defined in string resource files (`res/values/strings.xml` and locale-specific variants)
+- NEVER hardcode user-facing text in Kotlin source files or XML layouts
+- Follow Android string naming conventions:
+  - `action_*` for action buttons and interactive elements
+  - `label_*` for static labels and data display
+  - `description_*` for accessibility content descriptions
+  - `title_*` for section titles and headers
+  - `message_*` for user-facing messages and instructions
+- When adding new UI text, update both `values/strings.xml` (English) and `values-zh-rCN/strings.xml` (Chinese)
+- Use `context.getString(R.string.*)` in Kotlin code and `@string/*` in XML layouts
+- For formatted strings, use `getString(R.string.key, args)` with placeholders like `%s`, `%d`
+
 ### Architecture Patterns
 - Single-activity entrypoint: `MainActivity` only launches accessibility and overlay permission screens, then defers runtime logic.
 - Accessibility-driven core: `InspectorService` owns lifecycle, creates `OverlayManager`, and performs node hit-testing from overlay touch events rather than `onAccessibilityEvent`.

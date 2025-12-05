@@ -38,7 +38,7 @@ class OverlayManager(private val context: Context) {
 
     fun showFloatingControl() {
         if (!Settings.canDrawOverlays(context)) {
-            Toast.makeText(context, "Overlay permission not granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.message_overlay_permission_not_granted), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -104,7 +104,7 @@ class OverlayManager(private val context: Context) {
 
     fun showInspectorOverlay() {
         if (!Settings.canDrawOverlays(context)) {
-            Toast.makeText(context, "Overlay permission not granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.message_overlay_permission_not_granted), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -115,16 +115,12 @@ class OverlayManager(private val context: Context) {
         copyFeedbackView = inspectorOverlayView?.findViewById(R.id.tv_copy_feedback)
         
         val propertiesContainer = inspectorOverlayView?.findViewById<View>(R.id.tl_node_properties)
-        // Parent: ScrollView -> Parent: LinearLayout (inside MaxWidthLinearLayout) -> Parent: MaxWidthLinearLayout (root of layout_node_info)
-        // With the new layout_node_info:
-        // Root is MaxWidthLinearLayout.
-        // It is included in layout_inspector_overlay inside a FrameLayout.
-        // So finding the root of the included layout might be tricky if it's not merged.
-        // But since we can traverse up from a known child (tl_node_properties), let's do that to find the draggable container.
-        // tl_node_properties is inside ScrollView.
-        // ScrollView is inside MaxWidthLinearLayout (root of node info).
-        // So propertiesContainer.parent is ScrollView, parent.parent is MaxWidthLinearLayout.
-        val infoContainer = propertiesContainer?.parent?.parent as? View
+        // View hierarchy:
+        // tl_node_properties (TableLayout)
+        //   -> parent: LinearLayout (inside ScrollView)
+        //     -> parent: ScrollView
+        //       -> parent: MaxWidthLinearLayout (root of layout_node_info - this is what we need)
+        val infoContainer = propertiesContainer?.parent?.parent?.parent as? View
 
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -163,8 +159,36 @@ class OverlayManager(private val context: Context) {
                     MotionEvent.ACTION_MOVE -> {
                         val deltaX = event.rawX - lastX
                         val deltaY = event.rawY - lastY
-                        targetView.translationX = dX + deltaX
-                        targetView.translationY = dY + deltaY
+
+                        // Get screen dimensions
+                        val displayMetrics = context.resources.displayMetrics
+                        val screenWidth = displayMetrics.widthPixels.toFloat()
+                        val screenHeight = displayMetrics.heightPixels.toFloat()
+
+                        // Get target view dimensions
+                        val viewWidth = targetView.width.toFloat()
+                        val viewHeight = targetView.height.toFloat()
+
+                        // Calculate proposed translation
+                        var newTranslationX = dX + deltaX
+                        var newTranslationY = dY + deltaY
+
+                        // Get current position (center of screen by default due to layout_gravity)
+                        val currentX = (screenWidth - viewWidth) / 2f
+                        val currentY = (screenHeight - viewHeight) / 2f
+
+                        // Calculate boundaries (keep entire panel visible)
+                        val minX = -currentX
+                        val maxX = screenWidth - currentX - viewWidth
+                        val minY = -currentY
+                        val maxY = screenHeight - currentY - viewHeight
+
+                        // Constrain translation to boundaries
+                        newTranslationX = newTranslationX.coerceIn(minX, maxX)
+                        newTranslationY = newTranslationY.coerceIn(minY, maxY)
+
+                        targetView.translationX = newTranslationX
+                        targetView.translationY = newTranslationY
                     }
                 }
                 return true
@@ -179,7 +203,11 @@ class OverlayManager(private val context: Context) {
         }
 
         windowManager.addView(inspectorOverlayView, params)
-        infoContainer?.visibility = View.GONE
+
+        // Reset panel position to center when overlay is shown
+        infoContainer?.translationX = 0f
+        infoContainer?.translationY = 0f
+
         floatingControlView?.visibility = View.GONE
     }
 
@@ -200,28 +228,28 @@ class OverlayManager(private val context: Context) {
 
     fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect) {
         inspectorView?.updateHighlight(bounds)
-        
+
         val tableLayout = inspectorOverlayView?.findViewById<TableLayout>(R.id.tl_node_properties)
-        // Make the info container visible
-        val infoContainer = tableLayout?.parent?.parent as? View
+        // Make the info container visible - traverse up to MaxWidthLinearLayout root
+        val infoContainer = tableLayout?.parent?.parent?.parent as? View
         infoContainer?.visibility = View.VISIBLE
 
         tableLayout?.removeAllViews()
 
         val properties = mapOf(
-            "Package" to (node.packageName?.toString() ?: "N/A"),
-            "Class" to (node.className?.toString() ?: "N/A"),
-            "Resource ID" to (node.viewIdResourceName ?: "N/A"),
-            "Text" to (node.text?.toString() ?: "N/A"),
-            "Content Desc" to (node.contentDescription?.toString() ?: "N/A"),
-            "Bounds" to bounds.toShortString(),
-            "Clickable" to node.isClickable.toString(),
-            "Focusable" to node.isFocusable.toString(),
-            "Enabled" to node.isEnabled.toString(),
-            "Scrollable" to node.isScrollable.toString(),
-            "Checked" to node.isChecked.toString(),
-            "Editable" to node.isEditable.toString(),
-            "Visible to User" to node.isVisibleToUser.toString()
+            context.getString(R.string.label_property_package) to (node.packageName?.toString() ?: "N/A"),
+            context.getString(R.string.label_property_class) to (node.className?.toString() ?: "N/A"),
+            context.getString(R.string.label_property_resource_id) to (node.viewIdResourceName ?: "N/A"),
+            context.getString(R.string.label_property_text) to (node.text?.toString() ?: "N/A"),
+            context.getString(R.string.label_property_content_desc) to (node.contentDescription?.toString() ?: "N/A"),
+            context.getString(R.string.label_property_bounds) to bounds.toShortString(),
+            context.getString(R.string.label_property_clickable) to node.isClickable.toString(),
+            context.getString(R.string.label_property_focusable) to node.isFocusable.toString(),
+            context.getString(R.string.label_property_enabled) to node.isEnabled.toString(),
+            context.getString(R.string.label_property_scrollable) to node.isScrollable.toString(),
+            context.getString(R.string.label_property_checked) to node.isChecked.toString(),
+            context.getString(R.string.label_property_editable) to node.isEditable.toString(),
+            context.getString(R.string.label_property_visible_to_user) to node.isVisibleToUser.toString()
         )
 
         for ((key, value) in properties) {
@@ -246,7 +274,7 @@ class OverlayManager(private val context: Context) {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                 val clip = android.content.ClipData.newPlainText(key, value)
                 clipboard.setPrimaryClip(clip)
-                showCopyFeedback("$key copied to clipboard")
+                showCopyFeedback(context.getString(R.string.message_property_copied, key))
                 true
             }
 
@@ -265,7 +293,7 @@ class OverlayManager(private val context: Context) {
         val childrenArrow = inspectorOverlayView?.findViewById<android.widget.ImageView>(R.id.iv_children_arrow)
         
         val childCount = node.childCount
-        childrenTitle?.text = "Children ($childCount)"
+        childrenTitle?.text = context.getString(R.string.title_children_count, childCount)
         childrenContainer?.removeAllViews()
         childrenContainer?.visibility = View.GONE // Default collapsed
         childrenArrow?.rotation = 0f

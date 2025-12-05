@@ -13,7 +13,7 @@
         android:layout_height="32dp"
         android:layout_gravity="center"
         android:src="@drawable/ui_inspector_icon"
-        android:contentDescription="Inspect"
+        android:contentDescription="@string/action_inspect_description"
         android:scaleType="fitCenter" />
 
 </FrameLayout>

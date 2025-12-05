@@ -5,7 +5,8 @@
     android:background="@drawable/bg_floating_window"
     android:orientation="vertical"
     android:padding="0dp"
-    android:elevation="8dp">
+    android:elevation="8dp"
+    android:visibility="gone">
 
     <!-- Header / Drag Handle -->
     <LinearLayout
@@ -27,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Element Inspector"
+            android:text="@string/title_inspector"
             android:textColor="@color/element_text_main"
             android:textStyle="bold"
             android:textSize="14sp" />
@@ -38,7 +39,7 @@
             android:layout_height="20dp"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:tint="@color/element_text_secondary"
-            android:contentDescription="Close"
+            android:contentDescription="@string/action_close_description"
             android:clickable="true"
             android:focusable="true" />
     </LinearLayout>
@@ -81,17 +82,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Children (0)"
                     android:textStyle="bold"
                     android:textColor="@color/element_text_main"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp"
+                    tools:text="Children (0)"
+                    xmlns:tools="http://schemas.android.com/tools"/>
 
                 <ImageView
                     android:id="@+id/iv_children_arrow"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_chevron_down"
-                    android:contentDescription="Expand" />
+                    android:contentDescription="@string/action_expand_description" />
             </LinearLayout>
 
             <LinearLayout
@@ -120,7 +122,7 @@
             android:id="@+id/btn_parent"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:text="Parent"
+            android:text="@string/action_parent"
             android:background="@drawable/bg_button_secondary"
             android:textColor="@color/element_text_regular"
             android:textSize="12sp"

@@ -1,8 +1,45 @@
 <resources>
     <string name="app_name">Android UI Inspector</string>
     <string name="accessibility_service_description">Allows inspecting UI elements of other apps.</string>
+
+    <!-- Actions -->
     <string name="action_inspect">Inspect</string>
+    <string name="action_inspect_description">Inspect UI element</string>
     <string name="action_close">Close</string>
+    <string name="action_close_description">Close inspector</string>
+    <string name="action_expand_description">Expand</string>
+    <string name="action_parent">Parent</string>
+    <string name="action_enable_accessibility_service">Enable Accessibility Service</string>
+    <string name="action_grant_overlay_permission">Grant Overlay Permission</string>
+
+    <!-- Titles -->
+    <string name="title_inspector">Element Inspector</string>
+    <string name="title_permissions_required">Permissions Required</string>
+    <string name="title_children_count">Children (%d)</string>
+
+    <!-- Messages -->
+    <string name="message_inspect_ui_elements">Inspect UI elements on your screen</string>
+    <string name="message_permission_instruction">Please grant both Overlay and Accessibility permissions to use the inspector.</string>
+    <string name="message_copied_to_clipboard">Copied to clipboard</string>
+    <string name="message_overlay_permission_not_granted">Overlay permission not granted</string>
+    <string name="message_property_copied">%s copied to clipboard</string>
+
+    <!-- Property Labels -->
+    <string name="label_property_package">Package</string>
+    <string name="label_property_class">Class</string>
+    <string name="label_property_resource_id">Resource ID</string>
+    <string name="label_property_text">Text</string>
+    <string name="label_property_content_desc">Content Desc</string>
+    <string name="label_property_bounds">Bounds</string>
+    <string name="label_property_clickable">Clickable</string>
+    <string name="label_property_focusable">Focusable</string>
+    <string name="label_property_enabled">Enabled</string>
+    <string name="label_property_scrollable">Scrollable</string>
+    <string name="label_property_checked">Checked</string>
+    <string name="label_property_editable">Editable</string>
+    <string name="label_property_visible_to_user">Visible to User</string>
+
+    <!-- Legacy keys (kept for backward compatibility, will be removed) -->
     <string name="grant_overlay_permission">Grant Overlay Permission</string>
     <string name="grant_accessibility_permission">Grant Accessibility Permission</string>
     <string name="permission_required">Permissions Required</string>

@@ -11,6 +11,7 @@ A tool to inspect UI elements of other Android applications, similar to "Inspect
     - Text / Content Description
     - Screen Bounds
 - Visual highlighting of selected elements.
+- Internationalization support for English and Chinese (Simplified).
 
 ## Prerequisites
 - Android Device (Android 9.0+ recommended)
@@ -55,3 +56,32 @@ A tool to inspect UI elements of other Android applications, similar to "Inspect
 3. Navigate to the app you want to inspect.
 4. Click "Inspect".
 5. Tap on any element to see its details.
+
+## Localization
+
+The app supports internationalization with English and Chinese (Simplified) languages. The language switches automatically based on your device's system language setting.
+
+### Supported Languages
+- **English (en)** - Default
+- **Chinese Simplified (zh-CN)** - 简体中文
+
+### Adding New Languages
+
+To add support for additional languages:
+
+1. Create a new values directory for your locale:
+   ```
+   app/src/main/res/values-{locale}/
+   ```
+   For example: `values-es` (Spanish), `values-fr` (French), `values-ja` (Japanese)
+
+2. Create a `strings.xml` file in the new directory:
+   ```
+   app/src/main/res/values-{locale}/strings.xml
+   ```
+
+3. Copy all string keys from `app/src/main/res/values/strings.xml`
+
+4. Translate the values to your target language while keeping all keys and format specifiers (like `%s`, `%d`) unchanged
+
+5. Test by changing your device language settings

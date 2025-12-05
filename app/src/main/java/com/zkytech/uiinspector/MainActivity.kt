@@ -77,7 +77,7 @@ fun MainScreen() {
             )
             
             Text(
-                text = "Inspect UI elements on your screen",
+                text = stringResource(R.string.message_inspect_ui_elements),
                 fontSize = 16.sp,
                 color = ElementTextRegular,
                 modifier = Modifier.padding(bottom = 48.dp)
@@ -103,7 +103,7 @@ fun MainScreen() {
                             .fillMaxWidth()
                             .height(48.dp)
                     ) {
-                        Text("Enable Accessibility Service")
+                        Text(stringResource(R.string.action_enable_accessibility_service))
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -120,7 +120,7 @@ fun MainScreen() {
                             .fillMaxWidth()
                             .height(48.dp)
                     ) {
-                        Text("Grant Overlay Permission", color = ElementTextRegular)
+                        Text(stringResource(R.string.action_grant_overlay_permission), color = ElementTextRegular)
                     }
                 }
             }
