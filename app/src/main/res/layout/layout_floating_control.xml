@@ -5,6 +5,7 @@
     android:background="@drawable/bg_circle_button"
     android:elevation="8dp"
     android:id="@+id/btn_inspect"
+    android:layoutDirection="ltr"
     android:clickable="true"
     android:focusable="true">
 

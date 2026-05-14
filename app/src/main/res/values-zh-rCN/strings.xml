@@ -9,6 +9,8 @@
     <string name="action_close_description">关闭检查器</string>
     <string name="action_expand_description">展开</string>
     <string name="action_parent">父元素</string>
+    <string name="action_refresh">刷新</string>
+    <string name="action_copy_all">复制全部</string>
     <string name="action_enable_accessibility_service">启用辅助功能服务</string>
     <string name="action_grant_overlay_permission">授予悬浮窗权限</string>
 
@@ -16,6 +18,7 @@
     <string name="title_inspector">元素检查器</string>
     <string name="title_permissions_required">需要权限</string>
     <string name="title_children_count">子元素 (%d)</string>
+    <string name="title_quick_start">快速开始</string>
 
     <!-- Messages -->
     <string name="message_inspect_ui_elements">检查屏幕上的界面元素</string>
@@ -23,14 +26,25 @@
     <string name="message_copied_to_clipboard">已复制到剪贴板</string>
     <string name="message_overlay_permission_not_granted">未授予悬浮窗权限</string>
     <string name="message_property_copied">%s 已复制到剪贴板</string>
+    <string name="message_all_properties_copied">所有属性已复制到剪贴板</string>
+    <string name="message_ready_to_inspect">已就绪。使用悬浮按钮检查其他应用。</string>
+    <string name="guide_step_permissions">授予悬浮窗和辅助功能权限。</string>
+    <string name="guide_step_floating_button">点击悬浮检查按钮，然后点击屏幕上的任意元素。</string>
+    <string name="guide_step_copy_properties">长按单个属性，或使用复制全部导出详情。</string>
+    <string name="status_enabled">已启用</string>
+    <string name="status_required">需要授权</string>
 
     <!-- Property Labels -->
+    <string name="label_overlay_permission">悬浮窗权限</string>
+    <string name="label_accessibility_service">辅助功能服务</string>
     <string name="label_property_package">包名</string>
     <string name="label_property_class">类名</string>
     <string name="label_property_resource_id">资源 ID</string>
     <string name="label_property_text">文本</string>
     <string name="label_property_content_desc">内容描述</string>
     <string name="label_property_bounds">边界</string>
+    <string name="label_property_child_count">子元素数</string>
+    <string name="label_property_depth">层级深度</string>
     <string name="label_property_clickable">可点击</string>
     <string name="label_property_focusable">可聚焦</string>
     <string name="label_property_enabled">已启用</string>

@@ -31,10 +31,12 @@ class OverlayManager(private val context: Context) {
     var onInspectClicked: (() -> Unit)? = null
     var onCloseInspectorClicked: (() -> Unit)? = null
     var onParentClicked: (() -> Unit)? = null
+    var onRefreshClicked: (() -> Unit)? = null
     var onChildClicked: ((Int) -> Unit)? = null
     var onOverlayTouch: ((Int, Int) -> Unit)? = null
 
     private var floatingControlParams: WindowManager.LayoutParams? = null
+    private var lastPropertiesText: String = ""
 
     fun showFloatingControl() {
         if (!Settings.canDrawOverlays(context)) {
@@ -138,6 +140,14 @@ class OverlayManager(private val context: Context) {
             onParentClicked?.invoke()
         }
 
+        inspectorOverlayView?.findViewById<View>(R.id.btn_refresh_bounds)?.setOnClickListener {
+            onRefreshClicked?.invoke()
+        }
+
+        inspectorOverlayView?.findViewById<View>(R.id.btn_copy_all)?.setOnClickListener {
+            copyAllProperties()
+        }
+
         val dragHandle = inspectorOverlayView?.findViewById<View>(R.id.iv_drag_handle)
         
         // Drag logic for infoContainer via dragHandle
@@ -226,7 +236,7 @@ class OverlayManager(private val context: Context) {
         inspectorView?.updateAllBounds(bounds)
     }
 
-    fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect) {
+    fun updateNodeInfo(node: AccessibilityNodeInfo, bounds: Rect, depth: Int) {
         inspectorView?.updateHighlight(bounds)
 
         val tableLayout = inspectorOverlayView?.findViewById<TableLayout>(R.id.tl_node_properties)
@@ -243,6 +253,8 @@ class OverlayManager(private val context: Context) {
             context.getString(R.string.label_property_text) to (node.text?.toString() ?: "N/A"),
             context.getString(R.string.label_property_content_desc) to (node.contentDescription?.toString() ?: "N/A"),
             context.getString(R.string.label_property_bounds) to bounds.toShortString(),
+            context.getString(R.string.label_property_child_count) to node.childCount.toString(),
+            context.getString(R.string.label_property_depth) to depth.toString(),
             context.getString(R.string.label_property_clickable) to node.isClickable.toString(),
             context.getString(R.string.label_property_focusable) to node.isFocusable.toString(),
             context.getString(R.string.label_property_enabled) to node.isEnabled.toString(),
@@ -251,6 +263,9 @@ class OverlayManager(private val context: Context) {
             context.getString(R.string.label_property_editable) to node.isEditable.toString(),
             context.getString(R.string.label_property_visible_to_user) to node.isVisibleToUser.toString()
         )
+        lastPropertiesText = properties.entries.joinToString(separator = "\n") { (key, value) ->
+            "$key: $value"
+        }
 
         for ((key, value) in properties) {
             val tableRow = TableRow(context)
@@ -362,5 +377,17 @@ class OverlayManager(private val context: Context) {
                 }
                 .start()
         }
+    }
+
+    private fun copyAllProperties() {
+        if (lastPropertiesText.isBlank()) return
+
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        val clip = android.content.ClipData.newPlainText(
+            context.getString(R.string.title_inspector),
+            lastPropertiesText
+        )
+        clipboard.setPrimaryClip(clip)
+        showCopyFeedback(context.getString(R.string.message_all_properties_copied))
     }
 }

@@ -24,6 +24,10 @@ class InspectorService : AccessibilityService() {
             currentInspectedNode = null
         }
 
+        overlayManager.onRefreshClicked = {
+            refreshAllBounds()
+        }
+
         overlayManager.onParentClicked = {
             currentInspectedNode?.parent?.let { parent ->
                 updateInspectedNode(parent)
@@ -93,7 +97,18 @@ class InspectorService : AccessibilityService() {
         currentInspectedNode = node
         val bounds = Rect()
         node.getBoundsInScreen(bounds)
-        overlayManager.updateNodeInfo(node, bounds)
+        overlayManager.updateNodeInfo(node, bounds, getNodeDepth(node))
+    }
+
+    private fun getNodeDepth(node: AccessibilityNodeInfo): Int {
+        var depth = 0
+        var parent = node.parent
+        while (parent != null) {
+            depth += 1
+            val nextParent = parent.parent
+            parent = nextParent
+        }
+        return depth
     }
 
     private fun findNodeRecursive(node: AccessibilityNodeInfo, x: Int, y: Int): AccessibilityNodeInfo? {

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_floating_window"
     android:orientation="vertical"
+    android:layoutDirection="ltr"
     android:padding="0dp"
     android:elevation="8dp"
     android:visibility="gone">
@@ -126,6 +127,40 @@
             android:text="@string/action_parent"
             android:background="@drawable/bg_button_secondary"
             android:textColor="@color/element_text_regular"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:paddingHorizontal="12dp"
+            android:stateListAnimator="@null"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"/>
+
+        <Button
+            android:id="@+id/btn_refresh_bounds"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/action_refresh"
+            android:background="@drawable/bg_button_secondary"
+            android:textColor="@color/element_text_regular"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:paddingHorizontal="12dp"
+            android:stateListAnimator="@null"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"/>
+
+        <Button
+            android:id="@+id/btn_copy_all"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/action_copy_all"
+            android:background="@drawable/bg_button_primary"
+            android:textColor="@android:color/white"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:paddingHorizontal="12dp"

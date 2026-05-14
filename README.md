@@ -10,6 +10,9 @@ A tool to inspect UI elements of other Android applications, similar to "Inspect
     - Resource ID
     - Text / Content Description
     - Screen Bounds
+- Permission status dashboard and quick-start guide.
+- Copy individual properties or all selected element properties.
+- Refresh visible bounds while inspection mode is active.
 - Visual highlighting of selected elements.
 - Internationalization support for English and Chinese (Simplified).
 
@@ -24,6 +27,16 @@ A tool to inspect UI elements of other Android applications, similar to "Inspect
 2. Open in Android Studio.
 3. Build and Run on your device.
 4. Follow the on-screen instructions to grant permissions.
+
+## Automated Releases
+
+GitHub Actions builds on every push and manual workflow dispatch. Each run:
+
+1. Builds the release APK with a UTC timestamp version name.
+2. Downloads the Android Open Source Project platform public signing key.
+3. Signs the APK with `platform.pk8` / `platform.x509.pem`.
+4. Renames the artifact to `Android-UI-Inspector-YYYYMMDD-HHMMSS.apk`.
+5. Creates a GitHub Release tagged as `auto-YYYYMMDD-HHMMSS-<sha>` and uploads the APK.
 
 ## Architecture
 - **Entry point (MainActivity)**: Launches system screens for accessibility and overlay permissions via the two buttons, then defers all runtime logic to the service.

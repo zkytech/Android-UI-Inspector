@@ -9,6 +9,8 @@
     <string name="action_close_description">Close inspector</string>
     <string name="action_expand_description">Expand</string>
     <string name="action_parent">Parent</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_copy_all">Copy All</string>
     <string name="action_enable_accessibility_service">Enable Accessibility Service</string>
     <string name="action_grant_overlay_permission">Grant Overlay Permission</string>
 
@@ -16,6 +18,7 @@
     <string name="title_inspector">Element Inspector</string>
     <string name="title_permissions_required">Permissions Required</string>
     <string name="title_children_count">Children (%d)</string>
+    <string name="title_quick_start">Quick Start</string>
 
     <!-- Messages -->
     <string name="message_inspect_ui_elements">Inspect UI elements on your screen</string>
@@ -23,14 +26,25 @@
     <string name="message_copied_to_clipboard">Copied to clipboard</string>
     <string name="message_overlay_permission_not_granted">Overlay permission not granted</string>
     <string name="message_property_copied">%s copied to clipboard</string>
+    <string name="message_all_properties_copied">All properties copied to clipboard</string>
+    <string name="message_ready_to_inspect">Ready. Use the floating button to inspect another app.</string>
+    <string name="guide_step_permissions">Grant overlay and accessibility permissions.</string>
+    <string name="guide_step_floating_button">Tap the floating inspect button, then tap any element on screen.</string>
+    <string name="guide_step_copy_properties">Long-press a property or use Copy All to export details.</string>
+    <string name="status_enabled">Enabled</string>
+    <string name="status_required">Required</string>
 
     <!-- Property Labels -->
+    <string name="label_overlay_permission">Overlay permission</string>
+    <string name="label_accessibility_service">Accessibility service</string>
     <string name="label_property_package">Package</string>
     <string name="label_property_class">Class</string>
     <string name="label_property_resource_id">Resource ID</string>
     <string name="label_property_text">Text</string>
     <string name="label_property_content_desc">Content Desc</string>
     <string name="label_property_bounds">Bounds</string>
+    <string name="label_property_child_count">Child Count</string>
+    <string name="label_property_depth">Depth</string>
     <string name="label_property_clickable">Clickable</string>
     <string name="label_property_focusable">Focusable</string>
     <string name="label_property_enabled">Enabled</string>
