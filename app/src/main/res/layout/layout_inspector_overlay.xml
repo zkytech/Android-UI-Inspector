@@ -5,7 +5,7 @@
     android:layoutDirection="ltr"
     android:background="#40000000">
 
-    <com.zkytech.uiinspector.InspectorOverlayView
+    <com.hy.uiinspector.InspectorOverlayView
         android:id="@+id/inspector_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -26,7 +26,7 @@ Currently, when the inspector overlay is activated, the info panel appears immed
 - Adding additional gestures or controls
 
 ## Affected Components
-- `app/src/main/java/com/zkytech/uiinspector/OverlayManager.kt` - Core overlay management logic
+- `app/src/main/java/com/hy/uiinspector/OverlayManager.kt` - Core overlay management logic
 - `app/src/main/res/layout/layout_inspector_overlay.xml` - Overlay layout structure
 - `app/src/main/res/layout/layout_node_info.xml` - Info panel layout
 

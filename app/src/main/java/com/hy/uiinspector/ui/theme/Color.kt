@@ -1,4 +1,4 @@
-package com.zkytech.uiinspector.ui.theme
+package com.hy.uiinspector.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

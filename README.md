@@ -55,11 +55,11 @@ GitHub Actions builds on every push and manual workflow dispatch. Each run:
 
 ## Code Index
 - `app/src/main/AndroidManifest.xml`: Declares `MainActivity`, `InspectorService`, and the overlay/accessibility permissions.
-- `app/build/tmp/kotlin-classes/release/com/zkytech/uiinspector/MainActivity.class` (from `MainActivity.kt`): Opens accessibility and overlay permission settings.
-- `app/build/tmp/kotlin-classes/release/com/zkytech/uiinspector/InspectorService.class` (from `InspectorService.kt`): Accessibility service that owns the inspection lifecycle and node hit-testing.
-- `app/build/tmp/kotlin-classes/release/com/zkytech/uiinspector/OverlayManager.class` (from `OverlayManager.kt`): Creates overlays, binds button/touch listeners, renders node properties, and handles copy-to-clipboard feedback.
-- `app/build/tmp/kotlin-classes/release/com/zkytech/uiinspector/InspectorOverlayView.class` (from `InspectorOverlayView.kt`): Custom view that draws the highlight rectangle.
-- `app/build/tmp/kotlin-classes/release/com/zkytech/uiinspector/MaxWidthLinearLayout.class` (from `MaxWidthLinearLayout.kt`): Restricts the floating panel width.
+- `app/build/tmp/kotlin-classes/release/com/hy/uiinspector/MainActivity.class` (from `MainActivity.kt`): Opens accessibility and overlay permission settings.
+- `app/build/tmp/kotlin-classes/release/com/hy/uiinspector/InspectorService.class` (from `InspectorService.kt`): Accessibility service that owns the inspection lifecycle and node hit-testing.
+- `app/build/tmp/kotlin-classes/release/com/hy/uiinspector/OverlayManager.class` (from `OverlayManager.kt`): Creates overlays, binds button/touch listeners, renders node properties, and handles copy-to-clipboard feedback.
+- `app/build/tmp/kotlin-classes/release/com/hy/uiinspector/InspectorOverlayView.class` (from `InspectorOverlayView.kt`): Custom view that draws the highlight rectangle.
+- `app/build/tmp/kotlin-classes/release/com/hy/uiinspector/MaxWidthLinearLayout.class` (from `MaxWidthLinearLayout.kt`): Restricts the floating panel width.
 - Layouts: `app/src/main/res/layout/layout_floating_control.xml`, `app/src/main/res/layout/layout_inspector_overlay.xml`, `app/src/main/res/layout/layout_node_info.xml` define the floating button, overlay container, and properties panel.
 - Config: `app/src/main/res/xml/accessibility_service_config.xml` holds the service metadata for accessibility registration.
 

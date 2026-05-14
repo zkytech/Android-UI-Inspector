@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zkytech.uiinspector.MaxWidthLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hy.uiinspector.MaxWidthLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_floating_window"
@@ -172,4 +172,4 @@
 
     </LinearLayout>
 
-</com.zkytech.uiinspector.MaxWidthLinearLayout>
+</com.hy.uiinspector.MaxWidthLinearLayout>

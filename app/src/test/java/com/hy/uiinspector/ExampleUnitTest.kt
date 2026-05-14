@@ -1,4 +1,4 @@
-package com.zkytech.uiinspector
+package com.hy.uiinspector
 
 import org.junit.Test
 

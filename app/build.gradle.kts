@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.zkytech.uiinspector"
+    namespace = "com.hy.uiinspector"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.zkytech.uiinspector"
+        applicationId = "com.hy.uiinspector"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
